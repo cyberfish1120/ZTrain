@@ -1,6 +1,7 @@
 import torch
 
 from ZTrain.training import Trainer
+from ZTrain.training.callbacks import EarlyStopping
 
 from model import MyModel
 from metric import metric
@@ -21,7 +22,7 @@ optimizer = torch.optim.SGD(model.parameters(), args.learning_rate)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.5)
 
 trainer = Trainer(model, optimizer=optimizer, scheduler=scheduler, metric=metric, device=args.device)
-callbacks = []
+callbacks = EarlyStopping(monitor='loss', patience=3)
 trainer.fit(train_data, dev_data_raw, args.batch_size, args.epochs, callbacks=callbacks)
 trainer.evaluate(test_data_raw)
 # trainer.predict(test_data_raw)
